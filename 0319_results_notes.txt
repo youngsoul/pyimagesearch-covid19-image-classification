@@ -1,0 +1,215 @@
+0319 original training on latest dataset
+
+Epoch 25/25
+13/13 [==============================] - 44s 3s/step - loss: 0.1265 - accuracy: 0.9806 - val_loss: 0.1050 - val_accuracy: 0.9643
+[INFO] evaluating network...
+              precision    recall  f1-score   support
+
+       covid       0.93      1.00      0.97        14
+      normal       1.00      0.93      0.96        14
+
+    accuracy                           0.96        28
+   macro avg       0.97      0.96      0.96        28
+weighted avg       0.97      0.96      0.96        28
+
+[[14  0]
+ [ 1 13]]
+acc: 0.9643
+sensitivity: 1.0000
+specificity: 0.9286
+
+predict on test/NORMAL
+
+
+Model: ./original-keras-covid-19/covid19_vgg16_0319_model.h5
+Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/NORMAL
+Normal Accuracy: 0.8034188034188035
+
+Model: ./original-keras-covid-19/covid19_vgg16_0319_model.h5
+Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/PNEUMONIA
+Normal Accuracy: 0.6025641025641025
+
+
+Model: ./original-keras-covid-19/covid19.model
+Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/NORMAL
+Normal Accuracy: 0.7948717948717948
+
+
+Model: ./original-keras-covid-19/covid19.model
+Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/PNEUMONIA
+Normal Accuracy: 0.9692307692307692
+
+
+-------------------------------------------------------------------------------
+Training on my implementations on the 0319 dataset across the 4 different models
+
+Running My training loop across multiple models
+
+Epoch 00025: val_loss improved from 0.10472 to 0.10365, saving model to ./models/best-vgg16-0319-model.h5
+13/13 - 44s - loss: 0.1071 - accuracy: 0.9709 - val_loss: 0.1037 - val_accuracy: 0.9643
+[INFO] evaluating network...
+              precision    recall  f1-score   support
+
+       covid       0.93      1.00      0.97        14
+      normal       1.00      0.93      0.96        14
+
+    accuracy                           0.96        28
+   macro avg       0.97      0.96      0.96        28
+weighted avg       0.97      0.96      0.96        28
+
+[[14  0]
+ [ 1 13]]
+acc: 0.9643
+sensitivity: 1.0000
+sensitivity, aka recall or true positive rate indicates that when
+    the model says the patient was positive for COVID-19, how often was it correct.  This does not
+    mean that it found all of the COVID-19 cases, just that when it predicted COVID-19 how accurate was it.
+specificity: 0.9286
+specificity, aka precision or true negative, measures the proportion of actual negatives that are correctly
+    identified.  The percentage of healthy people who are correctly identified as NOT having the
+    condition. If this is not 1.0, then the model falsely said a patient
+    was healthy, and free from COVID-19, when in fact they did have COVID-19.
+2020-03-19 09:14:01.786 Python[5276:2254943] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to (null)
+[INFO] saving COVID-19 detector model...
+Finished Model: vgg16 took 1107.2530229091644 seconds
+accuracy        sensitivity     specificity     model name
+[[0.9642857142857143, 1.0, 0.9285714285714286, 'vgg16']]
+
+
+Epoch 00025: val_loss did not improve from 0.14942
+13/13 - 54s - loss: 0.1701 - accuracy: 0.9612 - val_loss: 0.2053 - val_accuracy: 0.9643
+[INFO] evaluating network...
+              precision    recall  f1-score   support
+
+       covid       0.93      0.93      0.93        14
+      normal       0.93      0.93      0.93        14
+
+    accuracy                           0.93        28
+   macro avg       0.93      0.93      0.93        28
+weighted avg       0.93      0.93      0.93        28
+
+[[13  1]
+ [ 1 13]]
+acc: 0.9286
+sensitivity: 0.9286
+sensitivity, aka recall or true positive rate indicates that when
+    the model says the patient was positive for COVID-19, how often was it correct.  This does not
+    mean that it found all of the COVID-19 cases, just that when it predicted COVID-19 how accurate was it.
+specificity: 0.9286
+specificity, aka precision or true negative, measures the proportion of actual negatives that are correctly
+    identified.  The percentage of healthy people who are correctly identified as NOT having the
+    condition. If this is not 1.0, then the model falsely said a patient
+    was healthy, and free from COVID-19, when in fact they did have COVID-19.
+2020-03-19 09:40:45.144 Python[7696:2278627] ApplePersistenceIgnoreState: Existing state will not be touched. New state will be written to (null)
+[INFO] saving COVID-19 detector model...
+Finished Model: vgg19 took 1340.9297320842743 seconds
+
+
+Epoch 00025: val_loss did not improve from 0.79014
+13/13 - 27s - loss: 0.0108 - accuracy: 1.0000 - val_loss: 0.8588 - val_accuracy: 0.5000
+[INFO] evaluating network...
+/Users/patrickryan/.local/share/virtualenvs/py37_tf2_deeplearning_venv/lib/python3.7/site-packages/sklearn/metrics/classification.py:1437: UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples.
+  'precision', 'predicted', average, warn_for)
+              precision    recall  f1-score   support
+
+       covid       0.50      1.00      0.67        14
+      normal       0.00      0.00      0.00        14
+
+    accuracy                           0.50        28
+   macro avg       0.25      0.50      0.33        28
+weighted avg       0.25      0.50      0.33        28
+
+[[14  0]
+ [14  0]]
+acc: 0.5000
+sensitivity: 1.0000
+sensitivity, aka recall or true positive rate indicates that when
+    the model says the patient was positive for COVID-19, how often was it correct.  This does not
+    mean that it found all of the COVID-19 cases, just that when it predicted COVID-19 how accurate was it.
+specificity: 0.0000
+specificity, aka precision or true negative, measures the proportion of actual negatives that are correctly
+    identified.  The percentage of healthy people who are correctly identified as NOT having the
+    condition. If this is not 1.0, then the model falsely said a patient
+    was healthy, and free from COVID-19, when in fact they did have COVID-19.
+[INFO] saving COVID-19 detector model...
+Finished Model: resnet50 took 677.8684051036835 seconds
+
+
+
+
+Epoch 00025: val_loss did not improve from 0.12240
+13/13 - 23s - loss: 0.0891 - accuracy: 0.9612 - val_loss: 0.3838 - val_accuracy: 0.8571
+[INFO] evaluating network...
+              precision    recall  f1-score   support
+
+       covid       1.00      0.86      0.92        14
+      normal       0.88      1.00      0.93        14
+
+    accuracy                           0.93        28
+   macro avg       0.94      0.93      0.93        28
+weighted avg       0.94      0.93      0.93        28
+
+[[12  2]
+ [ 0 14]]
+acc: 0.9286
+sensitivity: 0.8571
+sensitivity, aka recall or true positive rate indicates that when
+    the model says the patient was positive for COVID-19, how often was it correct.  This does not
+    mean that it found all of the COVID-19 cases, just that when it predicted COVID-19 how accurate was it.
+specificity: 1.0000
+specificity, aka precision or true negative, measures the proportion of actual negatives that are correctly
+    identified.  The percentage of healthy people who are correctly identified as NOT having the
+    condition. If this is not 1.0, then the model falsely said a patient
+    was healthy, and free from COVID-19, when in fact they did have COVID-19.
+[INFO] saving COVID-19 detector model...
+Finished Model: resnet50v2 took 583.4868700504303 seconds
+accuracy        sensitivity     specificity     model name
+[[0.9642857142857143, 1.0, 0.9285714285714286, 'vgg16']]
+[[0.9285714285714286, 0.9285714285714286, 0.9285714285714286, 'vgg19'],
+[0.5, 1.0, 0.0, 'resnet50'],
+[0.9285714285714286, 0.8571428571428571, 1.0, 'resnet50v2']]
+
+
+PREDICT NORMAL
+
+Model: ./models/best-vgg16-0319-model.h5
+Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/NORMAL
+Normal Accuracy: 0.7649572649572649
+
+Model: ./models/best-vgg19-0319-model.h5
+Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/NORMAL
+Normal Accuracy: 0.7991452991452992
+
+Model: ./models/best-resnet50-0319-model.h5
+Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/NORMAL
+Normal Accuracy: 0.0
+
+Model: ./models/best-resnet50v2-0319-model.h5
+Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/NORMAL
+Normal Accuracy: 0.8974358974358975
+
+PREDICT PNEUMONIA
+
+Model: ./models/best-vgg16-0319-model.h5
+Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/PNEUMONIA
+Normal Accuracy: 0.5615384615384615
+
+Model: ./models/best-vgg19-0319-model.h5
+Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/PNEUMONIA
+Normal Accuracy: 0.382051282051282
+
+Model: ./models/best-resnet50-0319-model.h5
+Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/PNEUMONIA
+Normal Accuracy: 0.0
+
+Model: ./models/best-resnet50v2-0319-model.h5
+Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/PNEUMONIA
+Normal Accuracy: 0.9179487179487179
+
+
+
+
+
+
+
+
