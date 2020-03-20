@@ -192,19 +192,19 @@ PREDICT PNEUMONIA
 
 Model: ./models/best-vgg16-0319-model.h5
 Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/PNEUMONIA
-Normal Accuracy: 0.5615384615384615
+PNEUMONIA Accuracy: 0.5615384615384615
 
 Model: ./models/best-vgg19-0319-model.h5
 Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/PNEUMONIA
-Normal Accuracy: 0.382051282051282
+PNEUMONIA Accuracy: 0.382051282051282
 
 Model: ./models/best-resnet50-0319-model.h5
 Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/PNEUMONIA
-Normal Accuracy: 0.0
+PNEUMONIA Accuracy: 0.0
 
 Model: ./models/best-resnet50v2-0319-model.h5
 Dataset: /Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/test/PNEUMONIA
-Normal Accuracy: 0.9179487179487179
+PNEUMONIA Accuracy: 0.9179487179487179
 
 
 

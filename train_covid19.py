@@ -152,7 +152,7 @@ def run_model(baseModel, model_name, dataset_dir_name, trainX, testX, trainY, te
 
     return [acc, sensitivity, specificity, model_name]
 
-def train_covid_model(dataset_dir, models=None):
+def train_covid_models(dataset_dir, models=None):
     """
 
     :param dataset_dir:
@@ -210,17 +210,17 @@ def train_covid_model(dataset_dir, models=None):
             #                         input_tensor=Input(shape=(224, 224, 3))),
             #     "name": "vgg16"
             # },
-            {
-                "base_model": VGG19(weights="imagenet", include_top=False,
-                                    input_tensor=Input(shape=(224, 224, 3))),
-                "name": "vgg19"
-            },
-            {
-                "base_model": ResNet50(weights="imagenet", include_top=False,
-                                       input_tensor=Input(shape=(224, 224, 3))),
-                "name": "resnet50"
-
-            },
+            # {
+            #     "base_model": VGG19(weights="imagenet", include_top=False,
+            #                         input_tensor=Input(shape=(224, 224, 3))),
+            #     "name": "vgg19"
+            # },
+            # {
+            #     "base_model": ResNet50(weights="imagenet", include_top=False,
+            #                            input_tensor=Input(shape=(224, 224, 3))),
+            #     "name": "resnet50"
+            #
+            # },
             {
                 "base_model": ResNet50V2(weights="imagenet", include_top=False,
                                        input_tensor=Input(shape=(224, 224, 3))),
@@ -257,7 +257,7 @@ if __name__ == '__main__':
 
     print(f"Using dataset directory: {dataset_dir}")
 
-    results = train_covid_model(dataset_dir)
+    results = train_covid_models(dataset_dir)
     print("accuracy\tsensitivity\tspecificity\tmodel name")
     print(results)
 
