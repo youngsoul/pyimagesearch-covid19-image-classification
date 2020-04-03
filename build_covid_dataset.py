@@ -1,6 +1,6 @@
 # USAGE
 # python build_covid_dataset.py --covid covid-chestxray-dataset --output dataset/covid
-
+# --covid /Volumes/MacBackup/covid-chestxray-dataset --output ./dataset/0318/covid
 """
 Largely the same as the one from PyImageSearch Blog but refactored to:
 
@@ -60,9 +60,9 @@ if __name__ == '__main__':
 
     # construct the argument parser and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-c", "--covid", required=True,
+    ap.add_argument("-c", "--covid", required=False, default='/Volumes/MacBackup/covid-chestxray-dataset',
                     help="path to base directory for COVID-19 dataset")
-    ap.add_argument("-o", "--output", required=True,
+    ap.add_argument("-o", "--output", required=False, default='./dataset/0402/covid',
                     help="path to directory where 'normal' images will be stored")
     args = vars(ap.parse_args())
 

@@ -21,6 +21,7 @@ from sklearn.metrics import confusion_matrix
 from imutils import paths
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 import argparse
 import cv2
 import os
@@ -51,7 +52,7 @@ def run_model(baseModel, model_name, dataset_dir_name, trainX, testX, trainY, te
     :type testY:
     :param lb:
     :type lb:
-    :return:  [
+    :return:  [confusion matrix, classification report, model name]
     :rtype: List
     """
     saved_model_path = os.path.sep.join(['.', 'models', f'{model_name}-{dataset_dir_name}-model.h5'])
@@ -66,7 +67,7 @@ def run_model(baseModel, model_name, dataset_dir_name, trainX, testX, trainY, te
     headModel = Flatten(name="flatten")(headModel)
     headModel = Dense(64, activation="relu")(headModel)
     headModel = Dropout(0.5)(headModel)
-    headModel = Dense(2, activation="softmax")(headModel)
+    headModel = Dense(3, activation="softmax")(headModel)
     # place the head FC model on top of the base model (this will become
     # the actual model we will train)
     model = Model(inputs=baseModel.input, outputs=headModel)
@@ -77,7 +78,7 @@ def run_model(baseModel, model_name, dataset_dir_name, trainX, testX, trainY, te
     # compile our model
     print("[INFO] compiling model...")
     opt = Adam(lr=INIT_LR, decay=INIT_LR / EPOCHS)
-    model.compile(loss="binary_crossentropy", optimizer=opt,
+    model.compile(loss="categorical_crossentropy", optimizer=opt,
                   metrics=["accuracy"])
 
     # initialize the training data augmentation object
@@ -99,7 +100,7 @@ def run_model(baseModel, model_name, dataset_dir_name, trainX, testX, trainY, te
         validation_data=(testX, testY),
         validation_steps=len(testX) // BS,
         epochs=EPOCHS,
-        verbose=2,
+        verbose=1,
         callbacks=callbacks)
 
     # make predictions on the testing set
@@ -111,27 +112,12 @@ def run_model(baseModel, model_name, dataset_dir_name, trainX, testX, trainY, te
     # label with corresponding largest predicted probability
     predIdxs = np.argmax(predIdxs, axis=1)
     # show a nicely formatted classification report
-    print(classification_report(testY.argmax(axis=1), predIdxs,
-                                target_names=lb.classes_))
+    class_report = classification_report(testY.argmax(axis=1), predIdxs,
+                                target_names=lb.classes_)
+    print(class_report)
     # compute the confusion matrix and and use it to derive the raw
     # accuracy, sensitivity, and specificity
     cm = confusion_matrix(testY.argmax(axis=1), predIdxs)
-    total = sum(sum(cm))
-    acc = (cm[0, 0] + cm[1, 1]) / total
-    sensitivity = cm[0, 0] / (cm[0, 0] + cm[0, 1])
-    specificity = cm[1, 1] / (cm[1, 0] + cm[1, 1])
-    # show the confusion matrix, accuracy, sensitivity, and specificity
-    print(cm)
-    print("acc: {:.4f}".format(acc))
-    print("sensitivity: {:.4f}".format(sensitivity))
-    print("""sensitivity, aka recall or true positive rate indicates that when
-    the model says the patient was positive for COVID-19, how often was it correct.  This does not
-    mean that it found all of the COVID-19 cases, just that when it predicted COVID-19 how accurate was it.""")
-    print("specificity: {:.4f}".format(specificity))
-    print("""specificity, aka precision or true negative, measures the proportion of actual negatives that are correctly
-    identified.  The percentage of healthy people who are correctly identified as NOT having the
-    condition. If this is not 1.0, then the model falsely said a patient
-    was healthy, and free from COVID-19, when in fact they did have COVID-19.""")
 
     # plot the training loss and accuracy
     N = EPOCHS
@@ -150,12 +136,12 @@ def run_model(baseModel, model_name, dataset_dir_name, trainX, testX, trainY, te
     print("[INFO] saving COVID-19 detector model...")
     model.save(saved_model_path, save_format="h5")
 
-    return [acc, sensitivity, specificity, model_name]
+    return [cm, class_report, model_name]
 
 def train_covid_models(dataset_dir, models=None):
     """
 
-    :param dataset_dir:
+    :param dataset_dir: root path to a directory with folders named for the target labels.
     :type dataset_dir:
     :param models:
     :type models:
@@ -194,7 +180,7 @@ def train_covid_models(dataset_dir, models=None):
     # perform one-hot encoding on the labels
     lb = LabelBinarizer()
     labels = lb.fit_transform(labels)
-    labels = to_categorical(labels)
+
     # print(f"Labels: {labels}")
     print(f"Class Labels: {lb.classes_}")
 
@@ -205,28 +191,28 @@ def train_covid_models(dataset_dir, models=None):
 
     if models is None:
         MODELS = [
-            # {
-            #     "base_model": VGG16(weights="imagenet", include_top=False,
-            #                         input_tensor=Input(shape=(224, 224, 3))),
-            #     "name": "vgg16"
-            # },
-            # {
-            #     "base_model": VGG19(weights="imagenet", include_top=False,
-            #                         input_tensor=Input(shape=(224, 224, 3))),
-            #     "name": "vgg19"
-            # },
+            {
+                "base_model": VGG16(weights="imagenet", include_top=False,
+                                    input_tensor=Input(shape=(224, 224, 3))),
+                "name": "vgg16"
+            },
+            {
+                "base_model": VGG19(weights="imagenet", include_top=False,
+                                    input_tensor=Input(shape=(224, 224, 3))),
+                "name": "vgg19"
+            },
             # {
             #     "base_model": ResNet50(weights="imagenet", include_top=False,
             #                            input_tensor=Input(shape=(224, 224, 3))),
             #     "name": "resnet50"
             #
             # },
-            {
-                "base_model": ResNet50V2(weights="imagenet", include_top=False,
-                                       input_tensor=Input(shape=(224, 224, 3))),
-                "name": "resnet50v2"
-
-            }
+            # {
+            #     "base_model": ResNet50V2(weights="imagenet", include_top=False,
+            #                            input_tensor=Input(shape=(224, 224, 3))),
+            #     "name": "resnet50v2"
+            #
+            # }
         ]
     else:
         MODELS = models
@@ -240,7 +226,7 @@ def train_covid_models(dataset_dir, models=None):
         model_results = run_model(model['base_model'], model['name'], dataset_dir_name, trainX, testX, trainY, testY, lb)
         end = time.time()
         all_model_run_results.append(model_results)
-        print(f"Finished Model: {model['name']} took {(end-start)} seconds")
+        print(f"Finished Model: {model['name']} took {(end-start)/60} minutes")
 
     return all_model_run_results
 
@@ -249,15 +235,26 @@ if __name__ == '__main__':
     print('Running Train COVID19 Models')
     # construct the argument parser and parse the arguments
     ap = argparse.ArgumentParser()
-    ap.add_argument("-d", "--dataset", required=True,
+    ap.add_argument("-d", "--dataset", required=False, default='./dataset/0402',
                     help="path to input dataset")
+    ap.add_argument("--epochs", required=False, type=int, default=25,
+                    help="Number of training epochs")
     args = vars(ap.parse_args())
 
     dataset_dir = args["dataset"]
+    EPOCHS = args['epochs']
 
     print(f"Using dataset directory: {dataset_dir}")
 
     results = train_covid_models(dataset_dir)
-    print("accuracy\tsensitivity\tspecificity\tmodel name")
-    print(results)
+    print("------------  Summary -------------")
+    for result in results:
+        print(f"\n--------- Model: {result[2]} -------------")
+        print("Classification Report:")
+        print(result[1])
+        print("Confusion Matrix")
+        df_cm = pd.DataFrame(
+            result[0], index=['covid', 'normal', 'pneumonia'], columns=['covid', 'normal', 'pneumonia'],
+        )
+        print(df_cm.head())
 

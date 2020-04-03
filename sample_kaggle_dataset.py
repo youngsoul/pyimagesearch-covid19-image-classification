@@ -1,6 +1,15 @@
 # USAGE
 # python sample_kaggle_dataset.py --kaggle chest_xray --output dataset/normal
 
+"""
+--kaggle
+/Volumes/MacBackup/kaggle-chest-x-ray-images/chest_xray/train/NORMAL
+--output
+./dataset/0318/normal
+--sample
+102
+"""
+
 # import the necessary packages
 from imutils import paths
 import argparse
@@ -24,12 +33,13 @@ def create_kaggle_dataset(kaggle_dataset_dir: str, output_dir: str, number_of_im
 	random.shuffle(imagePaths)
 	imagePaths = imagePaths[:number_of_images]
 
+	output_label = output_dir.split(os.path.sep)[-1]
 	# loop over the image paths
 	for (i, imagePath) in enumerate(imagePaths):
 		# extract the filename from the image path and then construct the
 		# path to the copied image file
 		filename = imagePath.split(os.path.sep)[-1]
-		filename = f"kaggle_{file_count}.{filename.split('.')[-1]}"
+		filename = f"kaggle_{output_label}_{file_count}.{filename.split('.')[-1]}"
 
 		outputPath = os.path.sep.join([output_dir, filename])
 
