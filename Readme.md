@@ -217,7 +217,7 @@ Actual      normal         2      18          1
 
 ```
 
-The recall, or true positive rate, is the proportion of actual positives the model classified correctly.  As you can see, the recall for covid was 1.00, meaning that all of the actual COIVID-19 samples were classified correctly.  However the covid precision, which is a measure of the predicted positives is 88%.  This means that 88% of the time when it predicted covid it was correct, meaning that 22% of the time the model predicted covid, but the actual target was normal or pneumonia.
+The recall, or true positive rate, is the proportion of actual positives the model classified correctly.  As you can see, the recall for covid was 1.00, meaning that all of the actual COIVID-19 samples were classified correctly.  However the covid precision, which is a measure of the predicted positives is 88%.  This means that 88% of the time when it predicted covid it was correct, meaning that 12% of the time the model predicted covid, but the actual target was normal or pneumonia.
 
 The `confusion matrix` shows how the predictions are distributed across the possible set of categories.
 
