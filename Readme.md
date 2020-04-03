@@ -68,6 +68,7 @@ Below is a representation of the entire CNN model with a Feature learning part (
 
 `*A New Method for Face Recognition Using Convolutional Neural Network - Scientific Figure on ResearchGate. Available from: https://www.researchgate.net/figure/A-convolutional-neural-networks-CNN_fig6_321286547 [accessed 18 Mar, 2020]*
 `
+
 Think of a convolution as a small, 3x3 or 5x5, etc, mathematical matrix that is applied to an image to alter the image.  We use convolutions all time when using image processing software to sharpen or blur an image.  The goal of training a CNN is to determine the values of the matrix convolutions that will alter the image in such a way as to expose features of the image that the FCN layer can use for classification.
 
 A CNN model will be made up of some number of convolutional layers.  Each layer will have a different number of kernels ( small matrix we talked about ), and a final fully connected network (FCN) layer that will be used to perform the actual classification step.
