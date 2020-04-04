@@ -8,7 +8,7 @@ The work and information in this notebook is inspired by a [blog post](https://w
 
 In that blog post, Adrian shows how to apply transfer learning using the [VGG16 Convolution Neural Network](https://neurohive.io/en/popular-networks/vgg16/) using the network weights from the ImageNet dataset.  
 
-My additions to blog post are:
+My additions to that blog post are:
 
 > * Added VGG19 to see how that model performs
 > * Change the classifier to a 3 category classifier: covid, normal and pneumonia using the Kaggle Chest X-Ray dataset.
