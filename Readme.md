@@ -20,7 +20,7 @@ Lastly we will look at how a model trained on the COVID-19 XRay images does agai
 
 ## Datasets
 
-Two datasets will be used for this analysis.  One one source collection of chest X-Rays of COVID-19 patients hosted on Github.  There other is from the Kaggle site which contains chest X-Rays of normal lung and those with pneumonia.
+Two datasets will be used for this analysis.  One source collection of chest X-Rays of COVID-19 patients hosted on Github.  The other is from the Kaggle site which contains chest X-Rays of normal lungs and those with pneumonia.
 
 
 ### COVID-19 Chest XRay Dataset
@@ -69,11 +69,11 @@ Below is a representation of the entire CNN model with a Feature learning part (
 `*A New Method for Face Recognition Using Convolutional Neural Network - Scientific Figure on ResearchGate. Available from: https://www.researchgate.net/figure/A-convolutional-neural-networks-CNN_fig6_321286547 [accessed 18 Mar, 2020]*
 `
 
-Think of a convolution as a small, 3x3 or 5x5, etc, mathematical matrix that is applied to an image to alter the image.  We use convolutions all time when using image processing software to sharpen or blur an image.  The goal of training a CNN is to determine the values of the matrix convolutions that will alter the image in such a way as to expose features of the image that the FCN layer can use for classification.
+Think of a convolution as a small, 3x3 or 5x5, etc, mathematical matrix that is applied to an image to alter the image.  We use convolutions often when using image processing software to sharpen or blur an image for example.  The goal of training a CNN is to determine the values of the matrix convolutions that will alter the image in such a way as to expose features of the image that the FCN layer can use for classification.
 
-A CNN model will be made up of some number of convolutional layers.  Each layer will have a different number of kernels ( small matrix we talked about ), and a final fully connected network (FCN) layer that will be used to perform the actual classification step.
+A CNN model will be made up of some number of convolutional layers.  Each layer will have a different number of kernels ( small matrix we talked about ), and a final a fully connected network (FCN) layer that will be used to perform the actual classification step.
 
-The initial convolutional layers, also called the convolutional base, act as a feature extraction layer.  This layer is attempting to identify the features in a dataset and for an image that might be interesting parts of the images. According to Francois Chollet the creator of Keras from his book Deep Learning with Python,
+The initial convolutional layers, also called the convolutional base, act as a feature extraction layer.  This layer is attempting to identify the features in a dataset and for an image that might contain interesting parts of the images. According to Francois Chollet the creator of Keras from his book Deep Learning with Python,
 
 `... the representations learned by the convolutional base as likely to be more generic [than the fully connected layer] and therefore more reusable; the feature maps of the convnet are presence maps of generic concepts over a picture, which is likely to be useful regardless of the conputer-vision problem at hand.`
 
@@ -88,11 +88,11 @@ The representation learned by the fully connected network layer will be specific
 
 There are two types of transfer learning; feature extraction and fine tuning.
 
-Fine tuning is when the fully connected network (FCN) layer of a convolutional neural network (CNN) is removed and retrained with a new FCN layer. But first - lets talk about CNNs.
+Fine tuning is when the fully connected network (FCN) layer of a convolutional neural network (CNN) is removed and retrained with a new FCN layer.
 
-The representation learned by the new fully connected network layer will be specific to the new dataset that the model is trained on, as it will only contain information about the set of possible outcomes.
+The representation learned by the new fully connected network layer will be specific to the new dataset that the model is trained on, as it will only contain information about the set of possible outcomes.  In our example the possible classifications are covid, normal and pneumonia.
 
-This means we can use a trained model leveraging all of the time and data it took for training the convolutional part, and just remove the FCN layer.
+This means we can use pre-trained model weights, leveraging all of the time and data it took for training the convolutional part, and just remove the FCN layer.
 
 A properly trained CNN requires a lot of data and CPU/GPU time. If our dataset is small, we cannot start from a fresh CNN model and try to train it and hope for good results.
 
@@ -102,11 +102,11 @@ A properly trained CNN requires a lot of data and CPU/GPU time. If our dataset i
 
 This section is meant to just scratch the surface of Deep Transfer Learning and how that is accomplished with TensorFlow and Keras.  It is one thing to say, 'just remove the FCN layer from the pre-configured CNN' and another to see what that means in the software.
 
-The resources mentioned above are very good for deep treatment of transfer learning.
+The resources mentioned above are very good for a deep treatment of transfer learning.
 
-For this post we will look to see how to use VGG16 for transfer learning.  My Github repo will use VGG16, VGG19 and shows you how to use all both models for transfer learning.  There are number of CNN architectures in the Keras library to choose from.  Different CNN architectures have very different performance characteristics. 
+For this post we will look to see how to use VGG16 for transfer learning.  This Github repo will use VGG16, VGG19 and shows you how to use both models for transfer learning.  There are number of CNN architectures in the Keras library to choose from.  Different CNN architectures have very different performance characteristics. 
 
-To setup the Deep Learning models for transfer learning, we have to remove the fully connected layer. Create the VGG16 class and specify the weights as 'imagenet' weights and include_top=False. This will pre-initialize all of the weights to be those trained on the ImageNet dataset, and remove the top FCN layer.
+To setup the Deep Learning models for transfer learning, we have to remove the fully connected layer. Create the VGG16 class and specify the `weights` as 'imagenet' weights and `include_top=False`. This will pre-initialize all of the weights to be those trained on the ImageNet dataset, and remove the top FCN layer.
 
 ![CNNNewFCN](./notebook_images/vgg16_model_setup.png)
 
@@ -120,20 +120,19 @@ Now that we have removed the FCN layer, we need to add our own FCN layer that wo
 
 ![CNNNewFCN](./notebook_images/base_model_setup.png)
 
-Here we start with the baseModel, which is the VGG16 model architecture, initialized with the 'imagenet' weights and we are going to add a new fully connected network (FCN) layer of 64 nodes, followed by a drop out layer randomly removing 1/2 the nodes to reduce overfitting then feed that into a 2 nodes output layer.
+Here we start with the baseModel, which is the VGG16 model architecture, initialized with the 'imagenet' weights and we are going to add a new fully connected network (FCN) layer of 64 nodes, followed by a drop out layer which randomly removing 1/2 the nodes to reduce overfitting then feed that into a 3 nodes output layer.
 
 There is nothing special about this particular FCN layer architecture.  Part of the task of machine learning is to experiment with different architectures to determine which is best for the problem at hand.
 
-The 2 nodes represent the probability of a COVID-19 X-Ray or a Normal X-Ray.
+The 3 nodes represent the probability of a COVID-19 X-Ray, Normal X-Ray or Pneumonia X-Ray.
 
-The last step, if you recall from the picture above is that we have to freeze the convolutional layers because we do not want to retrain that layer - we want to use the values from imagenet.  We when weights are adjusted, we only want the new FCN layer weights to be adjusted.
+The last step, if you recall from the picture above is that we have to freeze the convolutional layers because we do not want to retrain that layer - we want to use the values from imagenet.  When weights are adjusted, we only want the new FCN layer weights to be adjusted.
 
 ![CNNNewFCN](./notebook_images/freeze.png)
 
-At this point the new VGG16 model is ready to train against the COVID-19 and Normal Chest X-Ray data.
+At this point the new VGG16 model is ready to train against the COVID-19, Normal and Pneumonia Chest X-Ray data.
 
 The VGG16 model uses the convolutional network architecture as outlined in the research paper, with all of the convolutional kernel weights already initialized with the imagenet weights.  This will save a lot of time and CPU cycles.
-
 
 
 ## Models
@@ -144,18 +143,18 @@ The models investigated were `VGG16` and `VGG19` with the same FCN layer.
 
 ### build_covid_dataset.py
 
-This script will use the github repo that has been cloned locally, to pull out the images that are specifically marked as COVID-19.
+This script will use the github repo for the COVID images ( https://github.com/ieee8023/covid-chestxray-dataset ) that has been cloned locally, to pull out the images that are specifically marked as COVID-19.
 
 Run this script first, as it will output the number of COVID-19 images that were used.  Use this number to create a Kaggle normal and pneumonia dataset with the same number of images.
 
 ### sample_kaggle_dataset.py
 
-This script will pull a random selection of images from the specified directory.  For this project, this script was run once for NORMAL images and once for PNEUMONIA images.
+This script will pull a random selection of images from the specified directory where the Kaggle Pneumonia Chest X-Ray dataset was downloaded.  For this project, this script was run once for NORMAL training images and once for PNEUMONIA training images.
 
-At the end, you should have a root directory that looks like:
+When complete, you should have a root directory that looks like:
 
 ```text
-.
+. <root dataset directory>
 ├── covid [102 entries exceeds filelimit, not opening dir]
 ├── normal [102 entries exceeds filelimit, not opening dir]
 └── pneumonia [102 entries exceeds filelimit, not opening dir]
@@ -221,11 +220,11 @@ The recall, or true positive rate, is the proportion of actual positives the mod
 
 The `confusion matrix` shows how the predictions are distributed across the possible set of categories.
 
-A perfect recall means that the model, with the limited dataset, would not generally predict someone without COVID-19, but they actually do.
+A perfect recall means that the model, albeit with the limited dataset, would not generally predict someone does not have COVID-19, when they actually do.
 
 However we can see that we have 3 samples where the model predicted the patient had COVID-19, but did not.
 
-This is the tradeoff that has to be balanced.  Would we rather have the model error with a `False Negative`, and release an infected person into the general population.  Or error with a `False Positive` where the model predicts the person does have COVID-19, quarantine them, and it turns out they do not have COVID-19.
+This is the tradeoff that has to be balanced.  Would we rather have the model error with a `False Negative` (falsely state a patient does not have COVID but actually does), and release an infected person into the general population.  Or error with a `False Positive` (falsely state a patient does have COVID when they do not) where the model predicts the person does have COVID-19, quarantine them, and it turns out they do not have COVID-19.
 
 One outcome can be catastrophic and the other is a serious inconvenience.
   
@@ -250,11 +249,11 @@ Classification Report:
 weighted avg       0.89      0.89      0.89        62
 
 Confusion Matrix
-                Predictions
-           covid  normal  pneumonia
-covid         19       0          2
-normal         1      19          1
-pneumonia      0       3         17
+                             Predictions
+                         covid  normal  pneumonia
+            covid         19       0          2
+Actual      normal         1      19          1
+            pneumonia      0       3         17
 ```
 
 For VGG19 the recall was 0.9, or 90% meaning 90% when the patient had COVID-19, the model detected it, but from the `confusion matrix`, there are 2 samples where the model predicted pneumonia instead of COVID-19.
@@ -266,7 +265,7 @@ VGG19 still performed reasonably well.
 
 This section shows results on the Kaggle Test images used as the holdout set.
 
-This section does also predict the COVID-19 dataset used for training, and I realize that is very bad form, but I dont have other COVID-19 images right now.  I used all of them for training.
+This section does also predict on the COVID-19 dataset used for training, and I realize that is very bad form, but I dont have other COVID-19 images right now.  I used all of them for training.
 
 For this section, the best VGG16 model was saved and that is model used for this section.
 
@@ -320,10 +319,11 @@ NON-COVID-19 %: 0.00980392156862745
 
 ## Recap
 
-In this repo - we used a COVID-19 Chest X-Ray dataset, in combination with a Kaggle Normal/Pneumonia Chest X-Ray dataset to use Deep Transfer learning to classify images are COVID-19, Normal, Pneumonia.
+In this repo - we used a COVID-19 Chest X-Ray dataset, in combination with a Kaggle Normal/Pneumonia Chest X-Ray dataset to use Deep Transfer Learning to classify images as COVID-19, Normal, Pneumonia.
 
-We saw that Fine-Tuning and existing CNN, and retraining just the FCN layer on the Check X-Ray dataset allowed us to learn what each chest X-Ray looks like and provide intial image classification.
+We saw that using Fine-Tuning on an existing CNN, and retraining just the FCN layer on the Check X-Ray dataset allowed us to learn what each chest X-Ray looks like and provide intial image classification.
 
-Again - this repo should only be used for learning purposes and no claim on the suitability for actual COVID-19 detection is made explicity or implicitly.
+## Disclaimer
+This repo should only be used for learning purposes and no claim on the suitability for actual COVID-19 detection is made explicity or implicitly.
 
 
