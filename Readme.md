@@ -118,7 +118,7 @@ The third parameter, `input_tensor` is set to the Input shape of the images.
 
 Now that we have removed the FCN layer, we need to add our own FCN layer that wont have any weights. The new weights for the FCN layer will need to be learned by training the model on the new Chest X-Ray data.
 
-![CNNNewFCN](./notebook_images/base_model_setup.png)
+![CNNNewFCN](notebook_images/base_model_setup1.png)
 
 Here we start with the baseModel, which is the VGG16 model architecture, initialized with the 'imagenet' weights and we are going to add a new fully connected network (FCN) layer of 64 nodes, followed by a drop out layer which randomly removing 1/2 the nodes to reduce overfitting then feed that into a 3 nodes output layer.
 
